@@ -16,8 +16,8 @@ const WeatherContext = createContext<propType>({
 });
 
 const DataProvider = ({ children }: PropsWithChildren) => {
-    const [lat, setLat] = useState(0);
-    const [lon, setLon] = useState(0);
+    const [lat, setLat] = useState(5.9485);
+    const [lon, setLon] = useState(80.5353);
     return (
         <WeatherContext.Provider value={{ lat, lon, setLat, setLon }}>
             {children}

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, RefreshControl, ScrollView, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, RefreshControl, ScrollView, FlatList, TouchableOpacity, Image } from 'react-native';
 import { Stack } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useEffect, useState } from 'react';
@@ -79,13 +79,13 @@ interface Main {
 }
 
 export default function TabTwoScreen() {
-  
-  const {lat,lon} = useData();
+
+  const { lat, lon } = useData();
   const [load, setLoad] = useState(false);
 
   useEffect(() => {
     loadWeather();
-  },[lat,lon]);
+  }, [lat, lon]);
 
   const [wheatherData, setWeatherData] = useState<RootObject>();
 
@@ -121,7 +121,7 @@ export default function TabTwoScreen() {
 
       <ScrollView refreshControl={
         <RefreshControl refreshing={load} onRefresh={onRefresh} colors={['blue']} />
-      } style={{}}>
+      } showsVerticalScrollIndicator={false}>
 
         {
           load ? (
@@ -131,9 +131,25 @@ export default function TabTwoScreen() {
           )
             :
             (
-              <View>
-                <Text style={{ color: 'red' }} >{wheatherData?.city.name}</Text>
-                <Text style={{ color: 'red' }} >{wheatherData?.message}</Text>
+              <View style={{gap:20}}>
+
+                <View>
+                  <Text style={{fontSize:24,fontWeight:500}}>Hourly Forecast </Text>
+                  <Text style={{fontSize:18,fontWeight:300}}>{wheatherData?.city?.name}</Text>
+                </View>
+                
+                {
+                  wheatherData?.list.map((item, index) => (
+                    <View key={index} style={{backgroundColor:'red',padding:20,borderRadius:15}}>
+                      <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                        <Text style={{fontSize:18,fontWeight:400}}>{item.dt_txt.toString().substring(0,10)}</Text>
+                        <Image source={{uri:`https://openweathermap.org/img/wn/${item.weather[0].icon}@4x.png`}} width={150} height={150}/>
+                        <Text style={{fontSize:18,fontWeight:400}}>{item.dt_txt.toString().substring(11)}</Text>
+                      </View>
+                    </View>
+                  )
+                  )
+                }
               </View>
             )
         }
