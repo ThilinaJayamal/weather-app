@@ -3,6 +3,7 @@ import { Stack } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useEffect, useState } from 'react';
 import { useData } from '@/Provider/DataProvider';
+import MainCard from '@/components/MainCard';
 
 interface RootObject {
   coord: Coord;
@@ -143,7 +144,7 @@ export default function TabOneScreen() {
         <RefreshControl refreshing={load} onRefresh={onRefresh} colors={['blue']} />
       } style={{}}>
 
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 10, padding: 5 }}>
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 10, padding:10,marginTop:10 }}>
           {
             districtsInSriLanka.map((item, index) => (
               <View key={index}>
@@ -164,16 +165,13 @@ export default function TabOneScreen() {
         </ScrollView>
         {
           load ? (
-            <View style={{}}>
-              <Text style={{ fontSize: 14 }}>Loading...</Text>
+            <View style={{flex:1,justifyContent:'center',alignItems:'center',marginTop:'50%'}}>
+              <Text style={{ fontSize: 14,fontWeight:'400',color:'#2ECC71' }}>Loading...</Text>
             </View>
           )
             :
             (
-              <View>
-                <Text style={{ color: 'red' }} >{weatherData?.name}</Text>
-                <Text style={{ color: 'red' }} >{weatherData?.clouds?.all}</Text>
-              </View>
+              <MainCard city={weatherData?.name!} temp={weatherData?.main?.temp.toFixed()!} feels={weatherData?.main?.feels_like.toFixed()!} humidity={weatherData?.main?.humidity.toFixed()!} icon={weatherData?.weather[0].icon!} main={weatherData?.weather[0]?.main!} desc={weatherData?.weather[0]?.description!}></MainCard>
             )
         }
       </ScrollView>
