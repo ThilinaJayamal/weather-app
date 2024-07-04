@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, RefreshControl, ScrollView, FlatList, Touchable
 import { Stack } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useEffect, useState } from 'react';
+import { useData } from '@/Provider/DataProvider';
 
 interface RootObject {
   coord: Coord;
@@ -79,7 +80,6 @@ const districtsInSriLanka = [
   "Matale",
   "Matara",
   "Monaragala",
-  "Mullaitivu",
   "Nuwara Eliya",
   "Polonnaruwa",
   "Puttalam",
@@ -93,11 +93,15 @@ export default function TabOneScreen() {
   const [district, setDistrict] = useState('Matara');
   const [load, setLoad] = useState(false);
 
+  const { setLat, setLon } = useData();
+
+  const [weatherData, setWeatherData] = useState<RootObject>();
+
   useEffect(() => {
     loadWeather();
   }, [district]);
 
-  const [wheatherData, setWeatherData] = useState<RootObject>();
+
 
   const loadWeather = async () => {
     try {
@@ -107,10 +111,16 @@ export default function TabOneScreen() {
         console.log("error");
         setLoad(false);
       }
-
       const data = await response.json();
       setWeatherData(data);
       setLoad(false);
+
+      //used for setup weather forecast tab
+      if(!!!data){
+        return;
+      }
+      setLat(data?.coord?.lat);
+      setLon(data?.coord?.lon);
     }
     catch (err) {
       return;
@@ -125,18 +135,28 @@ export default function TabOneScreen() {
     }, 2000)
   }
   return (
-    <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+    <SafeAreaView style={{ backgroundColor: '#FDFEFE', flex: 1, padding: 10 }}>
+
+      <Stack.Screen options={{ headerShown: false }} />
 
       <ScrollView refreshControl={
         <RefreshControl refreshing={load} onRefresh={onRefresh} colors={['blue']} />
       } style={{}}>
 
-        <ScrollView horizontal={true}>
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 10, padding: 5 }}>
           {
-            districtsInSriLanka.map((item,index) => (
+            districtsInSriLanka.map((item, index) => (
               <View key={index}>
-                <TouchableOpacity style={{ paddingHorizontal: 20, paddingVertical: 10, backgroundColor: '#fff', borderRadius: 10 }} onPress={() => setDistrict(item)}>
-                  <Text>{item}</Text>
+                <TouchableOpacity style={{
+                  paddingHorizontal: 20, paddingVertical: 10, backgroundColor: (item === district ? "#2ECC71" : '#fff'), borderRadius: 20,
+                  shadowColor: '#34495E',
+                  shadowOffset: {
+                    width: 2,
+                    height: 2,
+                  },
+                  elevation: 2,
+                }} onPress={() =>setDistrict(item)}>
+                  <Text style={{ color: (item === district ? "#fff" : "#000"), fontWeight: '500' }}>{item}</Text>
                 </TouchableOpacity>
               </View>
             ))
@@ -145,14 +165,14 @@ export default function TabOneScreen() {
         {
           load ? (
             <View style={{}}>
-              <Text style={{ fontSize: 24 }}>Loading...</Text>
+              <Text style={{ fontSize: 14 }}>Loading...</Text>
             </View>
           )
             :
             (
               <View>
-                <Text style={{ color: 'red' }} >{wheatherData?.name}</Text>
-                <Text style={{ color: 'red' }} >{wheatherData?.clouds?.all}</Text>
+                <Text style={{ color: 'red' }} >{weatherData?.name}</Text>
+                <Text style={{ color: 'red' }} >{weatherData?.clouds?.all}</Text>
               </View>
             )
         }
