@@ -131,20 +131,35 @@ export default function TabTwoScreen() {
           )
             :
             (
-              <View style={{gap:20}}>
+              <View style={{ gap: 20 }}>
 
                 <View>
-                  <Text style={{fontSize:24,fontWeight:500}}>Hourly Forecast </Text>
-                  <Text style={{fontSize:18,fontWeight:300}}>{wheatherData?.city?.name}</Text>
+                  <Text style={{ fontSize: 24, fontWeight: 500,textAlign:'center' }}>Hourly Forecast </Text>
+                  <Text style={{ fontSize: 18, fontWeight: 300,textAlign:'center' }}>{wheatherData?.city?.name}</Text>
                 </View>
-                
+
                 {
                   wheatherData?.list.map((item, index) => (
-                    <View key={index} style={{backgroundColor:'red',padding:20,borderRadius:15}}>
-                      <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                        <Text style={{fontSize:18,fontWeight:400}}>{item.dt_txt.toString().substring(0,10)}</Text>
-                        <Image source={{uri:`https://openweathermap.org/img/wn/${item.weather[0].icon}@4x.png`}} width={150} height={150}/>
-                        <Text style={{fontSize:18,fontWeight:400}}>{item.dt_txt.toString().substring(11)}</Text>
+                    <View key={index} style={{padding: 20}}>
+                      <View style={{
+                        flex: 1, justifyContent: 'center', alignItems: 'center',
+                        backgroundColor: '#EBF5FB',padding:10, borderRadius: 20,
+                        shadowColor: '#212F3C',
+                        shadowOffset: {
+                          width: 2,
+                          height: 2
+                        },
+                        elevation: 2,
+                        borderWidth:1,
+                        borderColor:'#85C1E9',
+                        gap:10
+                      }}>
+                        <Text style={{ fontSize: 18, fontWeight: 400 }}>{item.dt_txt.toString().substring(0, 10)}</Text>
+                        <Image source={{ uri: `https://openweathermap.org/img/wn/${item.weather[0].icon}@4x.png` }} width={150} height={150} />
+                        <Text style={{ fontSize: 16, fontWeight: 400 }}>{item.weather[0].main.toUpperCase()}</Text>
+                        <Text style={{ fontSize: 12, fontWeight: 300 }}>{item.weather[0].description.toUpperCase()}</Text>
+                        <Text style={{ fontSize: 24, fontWeight: 600 }}>{item.main.temp.toFixed(0)} C</Text>
+                        <Text style={{ fontSize: 18, fontWeight: 400 }}>{item.dt_txt.toString().substring(11)}</Text>
                       </View>
                     </View>
                   )
